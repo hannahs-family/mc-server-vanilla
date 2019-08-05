@@ -9,20 +9,32 @@ JVM_MEM_MAX=${JVM_MEM_MAX:-1024M}
 
 cd $(pwd)/config
 
-for file in ../defaults/*; do
-    [ -f "$(basename ${file})" ] || cp ${file} .
+echo "Copying configuration overrides..."
+for file in ../overrides/*; do
+    echo "    $(basename ${file})"
+    cp ${file} .
 done
+echo "done!"
 
-if [ -n "$EULA" ]; then
-    sed -e "s/^eula=.*$/eula=${EULA}/" -i"" eula.txt
+echo "Copying configuration defaults..."
+for file in ../defaults/*; do
+    if [ ! -f "$(basename ${file})" ]; then
+        echo "    $(basename ${file})"
+        cp ${file} .
+    fi
+done
+echo "done!"
+
+if ! grep -q eula=true eula.txt; then
+    if [ "$EULA" != "true" ]; then
+        echo "You must accept the Minecraft EULA to run the server! Read it at:"
+        echo "> https://account.mojang.com/documents/minecraft_eula"
+        echo "and then restart the server with EULA=true to accept the EULA."
+        exit 1
+    else
+        sed -e "s/^eula=.*$/eula=${EULA}/" -i"" eula.txt
+    fi
 fi
-
-grep -q eula=true eula.txt || (
-    echo "You must accept the Minecraft EULA to run the server! Read it at:"
-    echo "> https://account.mojang.com/documents/minecraft_eula"
-    echo "and then restart the server with EULA=true to accept the EULA."
-    exit 1
-)
 
 sed -e "/^(query\.|server-)port=/g s/\d+/25565/" \
     -e "/^rcon.port=/g s/\d+/25575/" \

@@ -22,12 +22,12 @@ FROM openjdk:8-jre-alpine AS server
 WORKDIR /opt/minecraft
 RUN addgroup -g 1000 minecraft \
     && adduser -Ss /bin/false -u 1000 -G minecraft -h $(pwd) minecraft \
-    && mkdir -p bin config defaults server \
+    && mkdir -p bin config defaults overrides server \
     && chown -R minecraft:minecraft $(pwd)
 USER minecraft
 
 EXPOSE 25565 25575
-VOLUME [ "/opt/minecraft/config", "/opt/minecraft/server" ]
+VOLUME [ "/opt/minecraft/overrides", "/opt/minecraft/server" ]
 
 COPY config/ ./defaults/
 COPY scripts/start-server.sh ./bin/
