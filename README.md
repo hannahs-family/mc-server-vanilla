@@ -10,19 +10,19 @@ A simple Docker container for running a vanilla [Minecraft][] server:
 
     docker run --rm -it -e EULA=true \
         -p 25565:25565 -p 25575:25575 \
-        -v $(pwd)/config:/opt/minecraft/config \
+        -v $(pwd)/overrides:/opt/minecraft/overrides \
         -v $(pwd)/server:/opt/minecraft/server \
         hannahfamily/mc-server-vanilla
 
-Mounts the `config` and `server` directories in your current directory into
-the container, copies the default [configuration][] into the `config`
-directory, accepts the [Minecraft EULA][], exposes the server and RCON ports
-and starts the server. If a world exists in the `server` directory, the
-server will load it; if not, one will be generated. Your Minecraft client can
-connect to the server at `localhost:25565`; others on your local network can
-connect at `<your local IP address>:25565`. RCON must be enabled in the
-server properties file; if you don't want or need it, you can leave out the
-`-p 25575:25575` option.
+Mounts the `overrides` and `server` directories in your current directory
+into the container, copies the overrides and default [configuration][] into
+the `config` directory, accepts the [Minecraft EULA][], exposes the server
+and RCON ports and starts the server. If a world exists in the `server`
+directory, the server will load it; if not, one will be generated. Your
+Minecraft client can connect to the server at `localhost:25565`; others on
+your local network can connect at `<your local IP address>:25565`. RCON must
+be enabled in the server properties file; if you don't want or need it, you
+can leave out the `-p 25575:25575` option.
 
 ### Stopping the Server
 
@@ -36,14 +36,12 @@ Type `stop` into the server console, or from another terminal:
 
 ### Server Configuration
 
-If the default configuration was copied into an empty directory, simply
-change the files in that directory, and stop and restart the server.
-
-If you have existing configuration you want to load before starting the
-server for the first time, you can place it into the `config` directory that
-you mount into the container, and it won't be overwritten by the default
-configuration. You can use the default [configuration][] for reference, e.g.
-if you want to generate a world from a specific seed value.
+Any configuration files placed in the `overrides` directory that gets mounted
+into the container will be read (but not modified) by the server when it
+runs. To let the server make changes to the configuration, mount a directory
+to `/opt/minecraft/config` instead. Any files not overriden will be copied
+from the default [configuration][]. You can use the default configuration for
+reference, e.g. if you want to generate a world from a specific seed value.
 
 ### Load an Existing World
 
@@ -67,7 +65,7 @@ on a single machine), simply change the first number in each `-p` option of the
 
     docker run --rm -it -e EULA=true \
         -p 56001:25565 -p 56002:25575 \
-        -v $(pwd)/config:/opt/minecraft/config \
+        -v $(pwd)/overrides:/opt/minecraft/overrides \
         -v $(pwd)/server:/opt/minecraft/server \
         hannahfamily/mc-server-vanilla
 
@@ -75,7 +73,7 @@ Or to have Docker automatically assign random unused ports, replace both `-p`
 arguments with a single `-P`:
 
     docker run --rm -it -e EULA=true -P \
-        -v $(pwd)/config:/opt/minecraft/config \
+        -v $(pwd)/overrides:/opt/minecraft/overrides \
         -v $(pwd)/server:/opt/minecraft/server \
         hannahfamily/mc-server-vanilla
 
@@ -95,7 +93,9 @@ change it.
 ### `EULA`
 
 (Default: `false`) Set to `true` to accept the [Minecraft EULA][]. This must
-be done explicitly at least once by the server operator.
+be done explicitly by the server operator, or a file named `eula.txt` with a
+line containing only `eula=true` must be in the directory mounted at
+`/opt/minecraft/overrides`.
 
 ### `JVM_MEM_INIT`
 

@@ -10,12 +10,14 @@ RCON_PASSWORD=${RCON_PASSWORD:-}
 
 cd $(pwd)/config
 
-echo "Copying configuration overrides..."
-for file in ../overrides/*; do
-    echo "    $(basename ${file})"
-    cp ${file} .
-done
-echo "done!"
+if [ $(ls -1 ../overrides | wc -l) != "0" ]; then
+    echo "Copying configuration overrides..."
+    for file in ../overrides/*; do
+        echo "    $(basename ${file})"
+        cp ${file} .
+    done
+    echo "done!"
+fi
 
 echo "Copying configuration defaults..."
 for file in ../defaults/*; do
@@ -37,12 +39,12 @@ if ! grep -q eula=true eula.txt; then
     fi
 fi
 
-sed -e "/^(query\.|server-)port=/g s/\d+/25565/" \
-    -e "/^rcon.port=/g s/\d+/25575/" \
+sed -e "/^(query\.|server-)port=/ s/\d+/25565/" \
+    -e "/^rcon.port=/ s/\d+/25575/" \
     -i"" server.properties
 
 if [ -n "$RCON_PASSWORD" ]; then
-    sed -e "/^rcon\.password=/g s/=.*$/=${RCON_PASSWORD}/"
+    sed -e "/^rcon\.password=/ s/=.*$/=${RCON_PASSWORD}/" -i"" server.properties
 fi
 
 exec mc-server-runner --shell sh java -Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml -jar ../bin/minecraft-server.jar --nogui --universe=../server

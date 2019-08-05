@@ -27,7 +27,7 @@ RUN addgroup -g 1000 minecraft \
 USER minecraft
 
 EXPOSE 25565 25575
-VOLUME [ "/opt/minecraft/overrides", "/opt/minecraft/server" ]
+VOLUME [ "/opt/minecraft/config", "/opt/minecraft/overrides", "/opt/minecraft/server" ]
 
 COPY config/ ./defaults/
 COPY scripts/start-server.sh ./bin/
