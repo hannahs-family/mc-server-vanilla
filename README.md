@@ -107,6 +107,11 @@ be done explicitly at least once by the server operator.
 value can be increased depending on server load (players, redstone, &c.) and
 available system resources.
 
+### `RCON_PASSWORD`
+
+(Default: empty string) Sets the password for RCON connections. If set, this
+overrides any value set in the `server.properties` file.
+
 ## Credits
 
 Copyright (c) 2019 Hannah Family. Licensed under the terms of the [MIT
