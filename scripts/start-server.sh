@@ -33,7 +33,7 @@ if ! grep -q eula=true eula.txt; then
         echo "and then restart the server with EULA=true to accept the EULA."
         exit 1
     else
-        sed -e "/^eula= s/=.*$/=${EULA}/" -i"" eula.txt
+        sed -e "/^eula=/ s/=.*$/=${EULA}/" -i"" eula.txt
     fi
 fi
 
@@ -42,7 +42,7 @@ sed -e "/^(query\.|server-)port=/g s/\d+/25565/" \
     -i"" server.properties
 
 if [ -n "$RCON_PASSWORD" ]; then
-    sed -e "/^rcon\.password=/ s/=.*$/=${RCON_PASSWORD}/"
+    sed -e "/^rcon\.password=/g s/=.*$/=${RCON_PASSWORD}/"
 fi
 
 exec mc-server-runner --shell sh java -Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml -jar ../bin/minecraft-server.jar --nogui --universe=../server
