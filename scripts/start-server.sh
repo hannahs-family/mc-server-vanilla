@@ -4,9 +4,11 @@ set -eu
 set -o pipefail
 
 EULA=${EULA:-false}
-JVM_MEM_INIT=${JVM_MEM_INIT:-1024M}
 JVM_MEM_MAX=${JVM_MEM_MAX:-1024M}
+JVM_MEM_INIT=${JVM_MEM_INIT:-${JVM_MEM_MAX}}
+JVM_OPTS=${JVM_OPTS:-}
 RCON_PASSWORD=${RCON_PASSWORD:-}
+SERVER_OPTS=${SERVER_OPTS:-}
 
 cd $(pwd)/config
 
@@ -47,4 +49,7 @@ sed -e "/^(query\.|server-)port=/ s/\d+/25565/" \
     -e "/^rcon.port=/ s/\d+/25575/" \
     -i"" server.properties
 
-exec mc-server-runner --shell sh java -Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml -jar ../bin/minecraft-server.jar --nogui --universe=../server
+JVM_OPTS="-Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml ${JVM_OPTS}"
+SERVER_OPTS="--nogui --universe ../server ${SERVER_OPTS}"
+
+exec mc-server-runner --shell sh java ${JVM_OPTS} -jar ../bin/minecraft-server.jar ${SERVER_OPTS}

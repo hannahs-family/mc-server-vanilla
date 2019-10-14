@@ -99,7 +99,8 @@ line containing only `eula=true` must be in the directory mounted at
 
 ### `JVM_MEM_INIT`
 
-(Default: `1024M`) Initial amount of memory to allocate to the JVM.
+(Default: value of `$JVM_MEM_MAX`) Initial amount of memory to allocate to
+the JVM.
 
 ### `JVM_MEM_MAX`
 
@@ -107,10 +108,18 @@ line containing only `eula=true` must be in the directory mounted at
 value can be increased depending on server load (players, redstone, &c.) and
 available system resources.
 
+### `JVM_OPTS`
+
+Additional options passed to the JVM.
+
 ### `RCON_PASSWORD`
 
 (Default: empty string) Sets the password for RCON connections. If set, this
 overrides any value set in the `server.properties` file.
+
+### `SERVER_OPTS`
+
+Additional options passed to the Minecraft server.
 
 ## Credits
 
