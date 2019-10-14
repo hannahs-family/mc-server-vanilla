@@ -17,11 +17,11 @@ ARG VERSION=1.14.4
 COPY scripts/get-server.sh ./
 RUN ./get-server.sh
 
-FROM openjdk:8-jre-alpine AS server
+FROM adoptopenjdk:8-jre-openj9 AS server
 
 WORKDIR /opt/minecraft
-RUN addgroup -g 1000 minecraft \
-    && adduser -Ss /bin/false -u 1000 -G minecraft -h $(pwd) minecraft \
+RUN addgroup --gid 1000 minecraft \
+    && adduser --system --shell /bin/false --uid 1000 --ingroup minecraft --home $(pwd) minecraft \
     && mkdir -p bin config defaults overrides server \
     && chown -R minecraft:minecraft $(pwd)
 USER minecraft

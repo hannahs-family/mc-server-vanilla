@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -eu
 set -o pipefail
@@ -52,4 +52,4 @@ sed -e "/^(query\.|server-)port=/ s/\d+/25565/" \
 JVM_OPTS="-Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml ${JVM_OPTS}"
 SERVER_OPTS="--nogui --universe ../server ${SERVER_OPTS}"
 
-exec mc-server-runner --shell sh java ${JVM_OPTS} -jar ../bin/minecraft-server.jar ${SERVER_OPTS}
+exec mc-server-runner java ${JVM_OPTS} -jar ../bin/minecraft-server.jar ${SERVER_OPTS}
