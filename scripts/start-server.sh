@@ -4,8 +4,7 @@ set -eu
 set -o pipefail
 
 EULA=${EULA:-false}
-JVM_MEM_MAX=${JVM_MEM_MAX:-1024M}
-JVM_MEM_INIT=${JVM_MEM_INIT:-${JVM_MEM_MAX}}
+HEAP_SIZE=${HEAP_SIZE:-1024}
 JVM_OPTS=${JVM_OPTS:-}
 RCON_PASSWORD=${RCON_PASSWORD:-}
 SERVER_OPTS=${SERVER_OPTS:-}
@@ -49,7 +48,15 @@ sed -e "/^(query\.|server-)port=/ s/\d+/25565/" \
     -e "/^rcon.port=/ s/\d+/25575/" \
     -i"" server.properties
 
-JVM_OPTS="-Xms${JVM_MEM_INIT} -Xmx${JVM_MEM_MAX} -Dlog4j.configurationFile=log4j2.xml ${JVM_OPTS}"
+NURSERY_MINIMUM=$((${HEAP_SIZE} / 2))
+NURSERY_MAXIMUM=$((${HEAP_SIZE} * 4 / 5))
+
+JVM_OPTS="${JVM_OPTS} -Xms${HEAP_SIZE}M -Xmx${HEAP_SIZE}M -Xmns${NURSERY_MINIMUM}M -Xmnx${NURSERY_MAXIMUM}M"
+JVM_OPTS="${JVM_OPTS} -Xgc:concurrentScavenge -Xgc:dnssExpectedTimeRatioMaximum=3 -Xgc:scvNoAdaptiveTenure"
+JVM_OPTS="${JVM_OPTS} -Xdisableexplicitjc -Xtune:virtualized -Dlog4j.configurationFile=log4j2.xml"
 SERVER_OPTS="--nogui --universe ../server ${SERVER_OPTS}"
 
-exec mc-server-runner java ${JVM_OPTS} -jar ../bin/minecraft-server.jar ${SERVER_OPTS}
+CMD="mc-server-runner java ${JVM_OPTS} -jar ../bin/minecraft-server.jar ${SERVER_OPTS}"
+echo "${CMD}"
+
+exec ${CMD}

@@ -97,15 +97,10 @@ be done explicitly by the server operator, or a file named `eula.txt` with a
 line containing only `eula=true` must be in the directory mounted at
 `/opt/minecraft/overrides`.
 
-### `JVM_MEM_INIT`
+### `HEAP_SIZE`
 
-(Default: value of `$JVM_MEM_MAX`) Initial amount of memory to allocate to
-the JVM.
-
-### `JVM_MEM_MAX`
-
-(Default: `1024M`) Maximum amount of memory to allow the JVM to consume. This
-value can be increased depending on server load (players, redstone, &c.) and
+(Default: `1024`) Amount of memory (in MiB) allocated to the JVM. This value
+can be increased depending on server load (players, redstone, &c.) and
 available system resources.
 
 ### `JVM_OPTS`
