@@ -17,7 +17,7 @@ ARG VERSION=1.14.4
 COPY scripts/get-server.sh ./
 RUN ./get-server.sh
 
-FROM adoptopenjdk:8-jre-openj9 AS server
+FROM adoptopenjdk/openjdk13-openj9:alpine-jre
 
 WORKDIR /opt/minecraft
 RUN addgroup --gid 1000 minecraft \
