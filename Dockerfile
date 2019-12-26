@@ -13,7 +13,7 @@ FROM get-base AS get-server
 
 RUN apk add --update --no-cache jq
 
-ARG VERSION=1.15
+ARG VERSION=1.15.1
 COPY scripts/get-server.sh ./
 RUN ./get-server.sh
 
